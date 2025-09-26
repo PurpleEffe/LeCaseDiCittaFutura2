@@ -15,6 +15,35 @@ View your app in AI Studio: https://ai.studio/apps/drive/1zO2xM-oIpH4CbUvPjAuCO_
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+2. Configure the connection to GitHub:
+   - Copy `.env.local.example` to `.env.local`
+   - Fill in the required variables (see [GitHub configuration](#github-configuration))
 3. Run the app:
    `npm run dev`
+
+## GitHub configuration
+
+Il backend dell'applicazione utilizza i file JSON pubblicati su GitHub Pages come database e, quando sono disponibili le credenziali, effettua il commit automatico delle modifiche sul repository. Crea un file `.env.local` con le seguenti variabili:
+
+```
+VITE_GITHUB_OWNER=<owner del repository>
+VITE_GITHUB_REPO=<nome del repository>
+VITE_GITHUB_TOKEN=<token con permesso "contents:write">
+VITE_GITHUB_BRANCH=main             # opzionale, default "main"
+VITE_GITHUB_PAGES_BASE_URL=https://<owner>.github.io/<repo>   # opzionale
+VITE_GITHUB_DATA_PATH=public/data    # opzionale
+VITE_GITHUB_PAGES_DATA_PATH=data     # opzionale
+VITE_PUBLIC_BASE_PATH=/nome-repo/    # opzionale, utile per GitHub Pages
+```
+
+Se il token non è configurato l'applicazione continua a funzionare in sola lettura e qualsiasi modifica (nuove prenotazioni, utenti o case) viene salvata solamente in memoria temporanea. Impostando il token verranno effettuati commit automatici nei file JSON all'interno di `public/data/`.
+
+### Deployment su GitHub Pages
+
+Per evitare errori 404 sugli asset quando l'app è pubblicata in una sottocartella (ad esempio `https://<owner>.github.io/<repo>/`), imposta la variabile `VITE_PUBLIC_BASE_PATH` nel file `.env.local` con il valore della sottocartella, includendo la slash iniziale e finale, ad esempio:
+
+```
+VITE_PUBLIC_BASE_PATH=/LeCaseDiCittaFutura2/
+```
+
+In assenza della variabile l'app utilizza automaticamente percorsi relativi durante la build, in modo da funzionare anche su GitHub Pages.
