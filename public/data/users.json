@@ -1,0 +1,9 @@
+[
+  {
+    "id": "1",
+    "name": "Gestore",
+    "email": "gestore@cittafutura.it",
+    "password": "Gestore123",
+    "role": "manager"
+  }
+]
