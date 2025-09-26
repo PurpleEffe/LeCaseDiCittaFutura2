@@ -1,0 +1,79 @@
+[
+  {
+    "id": "b1",
+    "houseId": "casa-ulivo",
+    "houseTitle": "Casa dell'Ulivo",
+    "from": "2024-11-10",
+    "to": "2024-11-15",
+    "guests": 2,
+    "requester": { "name": "Maria Bianchi", "email": "maria@example.com", "userId": "guest-1" },
+    "notes": "",
+    "status": "approved"
+  },
+  {
+    "id": "b2",
+    "houseId": "casa-ulivo",
+    "houseTitle": "Casa dell'Ulivo",
+    "from": "2024-11-25",
+    "to": "2024-11-28",
+    "guests": 4,
+    "requester": { "name": "Famiglia Verdi", "email": "verdi@example.com", "userId": "guest-2" },
+    "notes": "Viaggiamo con due bambini piccoli.",
+    "status": "approved"
+  },
+  {
+    "id": "b3",
+    "houseId": "la-terrazza-sul-mare",
+    "houseTitle": "La Terrazza sul Mare",
+    "from": "2024-12-01",
+    "to": "2024-12-08",
+    "guests": 3,
+    "requester": { "name": "Luca Rossi", "email": "luca@example.com", "userId": "guest-3" },
+    "notes": "",
+    "status": "approved"
+  },
+  {
+    "id": "b4",
+    "houseId": "il-rifugio-del-poeta",
+    "houseTitle": "Il Rifugio del Poeta",
+    "from": "2024-11-18",
+    "to": "2024-11-22",
+    "guests": 1,
+    "requester": { "name": "Giulia Neri", "email": "giulia@example.com", "userId": "guest-4" },
+    "notes": "Vengo per un ritiro di scrittura.",
+    "status": "approved"
+  },
+  {
+    "id": "b5",
+    "houseId": "la-casa-grande",
+    "houseTitle": "La Casa Grande",
+    "from": "2024-12-10",
+    "to": "2024-12-15",
+    "guests": 6,
+    "requester": { "name": "Gruppo Amici", "email": "amici@example.com", "userId": "guest-5" },
+    "notes": "Siamo un gruppo di studenti universitari.",
+    "status": "pending"
+  },
+  {
+    "id": "b6",
+    "houseId": "la-terrazza-sul-mare",
+    "houseTitle": "La Terrazza sul Mare",
+    "from": "2024-12-20",
+    "to": "2024-12-27",
+    "guests": 2,
+    "requester": { "name": "Marco Gialli", "email": "marco@example.com", "userId": "guest-6" },
+    "notes": "Vorremmo passare il Natale da voi.",
+    "status": "pending"
+  },
+  {
+    "id": "b7",
+    "houseId": "casa-ulivo",
+    "houseTitle": "Casa dell'Ulivo",
+    "from": "2025-02-01",
+    "to": "2025-02-03",
+    "guests": 2,
+    "requester": { "name": "Anna Blu", "email": "anna@example.com", "userId": "guest-7" },
+    "notes": "",
+    "status": "denied"
+  }
+]
