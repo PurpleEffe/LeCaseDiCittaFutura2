@@ -33,6 +33,21 @@ VITE_GITHUB_BRANCH=main             # opzionale, default "main"
 VITE_GITHUB_PAGES_BASE_URL=https://<owner>.github.io/<repo>   # opzionale
 VITE_GITHUB_DATA_PATH=public/data    # opzionale
 VITE_GITHUB_PAGES_DATA_PATH=data     # opzionale
+VITE_PUBLIC_BASE_PATH=/nome-repo/    # opzionale, utile per GitHub Pages
 ```
 
 Se il token non è configurato l'applicazione continua a funzionare in sola lettura e qualsiasi modifica (nuove prenotazioni, utenti o case) viene salvata solamente in memoria temporanea. Impostando il token verranno effettuati commit automatici nei file JSON all'interno di `public/data/`.
+
+### Deployment su GitHub Pages
+
+Per evitare errori 404 sugli asset quando l'app è pubblicata in una sottocartella (ad esempio `https://<owner>.github.io/<repo>/`), imposta la variabile `VITE_PUBLIC_BASE_PATH` nel file `.env.local` con il valore della sottocartella, includendo la slash iniziale e finale, ad esempio:
+
+```
+VITE_PUBLIC_BASE_PATH=/LeCaseDiCittaFutura2/
+```
+
+In assenza della variabile l'app utilizza automaticamente percorsi relativi durante la build, in modo da funzionare anche su GitHub Pages.
+
+
+Se il token non è configurato l'applicazione continua a funzionare in sola lettura e qualsiasi modifica (nuove prenotazioni, utenti o case) viene salvata solamente in memoria temporanea. Impostando il token verranno effettuati commit automatici nei file JSON all'interno di `public/data/`.
+
