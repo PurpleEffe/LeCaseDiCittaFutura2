@@ -3,7 +3,7 @@
 import React, { useState, useEffect, createContext, useContext, useCallback, useMemo } from 'react';
 import { HashRouter, Routes, Route, Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home as HomeIcon, Building2, Calendar as CalendarIcon, Users, Mail, User as UserIcon, LogIn, LogOut, Menu, X, Plus, Trash2, Edit, Check, AlertTriangle, ArrowLeft, CheckCircle, ChevronLeft, ChevronRight, Clock, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Home as HomeIcon, Building2, Calendar as CalendarIcon, Users, Mail, User as UserIcon, LogIn, LogOut, Menu, X, Plus, Trash2, Edit, Check, AlertTriangle, ArrowLeft, CheckCircle, ChevronLeft, ChevronRight, Clock, ThumbsUp, ThumbsDown, UploadCloud } from 'lucide-react';
 
 import { api } from './services/api';
 import { House, User, Role, Amenity, Booking, Holiday, BookingStatus } from './types';
@@ -701,7 +701,7 @@ const HouseDetailPage: React.FC = () => {
             <div className="grid lg:grid-cols-5 gap-12">
                 {/* Image Gallery */}
                 <div className="lg:col-span-3">
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="aspect-w-16 aspect-h-9 mb-4 rounded-lg overflow-hidden shadow-lg">
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="relative h-80 md:h-[450px] w-full mb-4 rounded-lg overflow-hidden shadow-lg">
                         <AnimatePresence mode="wait">
                             <motion.img 
                                 key={selectedImage}
@@ -714,6 +714,9 @@ const HouseDetailPage: React.FC = () => {
                                 transition={{ duration: 0.3 }}
                             />
                         </AnimatePresence>
+                        <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/70 to-transparent rounded-b-lg">
+                            <h1 className="text-4xl font-serif font-bold text-white drop-shadow-lg">{house.title}</h1>
+                        </div>
                     </motion.div>
                     <div className="grid grid-cols-5 gap-2">
                         {house.images.map((img, index) => (
@@ -726,8 +729,7 @@ const HouseDetailPage: React.FC = () => {
 
                 {/* House Info */}
                 <div className="lg:col-span-2">
-                    <h1 className="text-4xl font-serif font-bold text-brand-dark">{house.title}</h1>
-                    <p className="text-lg text-gray-700 mt-4">{house.description}</p>
+                    <p className="text-lg text-gray-700 mt-8 lg:mt-0">{house.description}</p>
                     
                     <div className="mt-8 border-t pt-6">
                         <h3 className="text-xl font-semibold mb-4">Dettagli</h3>
@@ -1195,6 +1197,7 @@ const HouseEditorPage: React.FC = () => {
         amenities: [], images: [], location: { lat: 0, lng: 0, address: '' }, active: true
     });
     const [loading, setLoading] = useState(isEditing);
+    const [isDragging, setIsDragging] = useState(false);
     
     useEffect(() => {
         if (isEditing && id) {
@@ -1233,18 +1236,53 @@ const HouseEditorPage: React.FC = () => {
             return {...prev, amenities: newAmenities };
         });
     };
+
+    const processFiles = (files: File[]) => {
+        const imageFiles = files.filter(file => file.type.startsWith('image/'));
+
+        imageFiles.forEach(file => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setHouse(prev => ({
+                    ...prev,
+                    images: [...prev.images, reader.result as string]
+                }));
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            processFiles(Array.from(e.target.files));
+        }
+        e.target.value = '';
+    };
+
+    const handleImageDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            processFiles(Array.from(e.dataTransfer.files));
+            e.dataTransfer.clearData();
+        }
+    };
+
+    const handleRemoveImage = (indexToRemove: number) => {
+        setHouse(prev => ({
+            ...prev,
+            images: prev.images.filter((_, index) => index !== indexToRemove)
+        }));
+    };
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const houseDataWithParsedImages = {
-            ...house,
-            images: typeof house.images === 'string' ? (house.images as string).split(',').map(url => url.trim()) : house.images,
-        };
-
         if (isEditing) {
-            await api.updateHouse(houseDataWithParsedImages as House);
+            const dataToSave = { ...house, updatedAt: new Date().toISOString() };
+            await api.updateHouse(dataToSave as House);
         } else {
-            await api.createHouse(houseDataWithParsedImages);
+            await api.createHouse(house as Omit<House, 'id' | 'updatedAt'>);
         }
         navigate('/manager');
     };
@@ -1299,10 +1337,44 @@ const HouseEditorPage: React.FC = () => {
                         </div>
                     </div>
                     
-                     {/* Images */}
+                    {/* Images */}
                     <div>
-                        <label htmlFor="images" className="block text-sm font-medium text-gray-700">URL Immagini (separate da virgola)</label>
-                        <textarea name="images" value={Array.isArray(house.images) ? house.images.join(', ') : house.images} onChange={handleInputChange} rows={3} className="mt-1 block w-full bg-white text-brand-dark border-gray-300 rounded-md shadow-sm focus:ring-brand-blue focus:border-brand-blue" placeholder="https://.../img1.jpg, https://.../img2.jpg"></textarea>
+                        <label className="block text-sm font-medium text-gray-700">Immagini</label>
+                        <div
+                            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }}
+                            onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }}
+                            onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); }}
+                            onDrop={handleImageDrop}
+                            className={`mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md transition-colors ${isDragging ? 'border-brand-blue bg-blue-50' : ''}`}
+                        >
+                            <div className="space-y-1 text-center">
+                                <UploadCloud className="mx-auto h-12 w-12 text-gray-400" />
+                                <div className="flex text-sm text-gray-600">
+                                    <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-brand-blue hover:text-brand-ochre focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-brand-blue">
+                                        <span>Carica i file</span>
+                                        <input id="file-upload" name="file-upload" type="file" className="sr-only" multiple accept="image/*" onChange={handleImageUpload} />
+                                    </label>
+                                    <p className="pl-1">o trascinali qui</p>
+                                </div>
+                                <p className="text-xs text-gray-500">File PNG, JPG, GIF</p>
+                            </div>
+                        </div>
+
+                        {house.images.length > 0 && (
+                            <div className="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {house.images.map((image, index) => (
+                                <div key={index} className="relative group aspect-w-1 aspect-h-1">
+                                <img src={image} alt={`Anteprima ${index + 1}`} className="h-full w-full object-cover rounded-md shadow-sm" />
+                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-md">
+                                    <button type="button" onClick={() => handleRemoveImage(index)} className="text-white p-2 bg-red-600 rounded-full hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black/50 focus:ring-red-500">
+                                        <Trash2 className="h-5 w-5" />
+                                        <span className="sr-only">Rimuovi immagine</span>
+                                    </button>
+                                </div>
+                                </div>
+                            ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Location */}
@@ -1373,4 +1445,5 @@ const App: React.FC = () => {
   );
 };
 
+// Fix: Removed extraneous text from the end of the file that was causing syntax errors.
 export default App;
