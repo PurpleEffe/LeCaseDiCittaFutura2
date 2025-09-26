@@ -40,6 +40,7 @@ Se il token non è configurato l'applicazione continua a funzionare in sola lett
 
 ### Deployment su GitHub Pages
 
+Il repository include un workflow GitHub Actions (`Deploy to GitHub Pages`) che compila automaticamente l'app e pubblica la cartella `dist/` su GitHub Pages ogni volta che effettui un push su `main`. Una volta abilitato Pages nelle impostazioni del repository, scegli **GitHub Actions** come sorgente di pubblicazione in modo che la pipeline gestisca build e deploy senza dover committare i file generati.
 Per evitare errori 404 sugli asset quando l'app è pubblicata in una sottocartella (ad esempio `https://<owner>.github.io/<repo>/`), imposta la variabile `VITE_PUBLIC_BASE_PATH` nel file `.env.local` con il valore della sottocartella, includendo la slash iniziale e finale, ad esempio:
 
 ```
@@ -50,4 +51,3 @@ In assenza della variabile l'app utilizza automaticamente percorsi relativi dura
 
 
 Se il token non è configurato l'applicazione continua a funzionare in sola lettura e qualsiasi modifica (nuove prenotazioni, utenti o case) viene salvata solamente in memoria temporanea. Impostando il token verranno effettuati commit automatici nei file JSON all'interno di `public/data/`.
-
