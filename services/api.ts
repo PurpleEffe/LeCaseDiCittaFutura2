@@ -1,5 +1,5 @@
 import { House, Booking, BookingStatus, Holiday, User, Role } from '../types';
-import { loadDataFile, saveDataFile } from './localDb';
+import { loadDataFile, saveDataFile } from './githubClient';
 
 const HOUSES_FILE = 'houses.json';
 const BOOKINGS_FILE = 'bookings.json';
@@ -23,13 +23,6 @@ const ensureHouseUpdatedAt = (house: House): House => ({
 const sortBookingsByDateDesc = (bookings: Booking[]): Booking[] => [...bookings]
   .sort((a, b) => new Date(b.from).getTime() - new Date(a.from).getTime());
 
-const localPersistenceUrl = (): string => {
-  if (typeof window !== 'undefined') {
-    return window.location.href;
-  }
-  return '#';
-};
-
 export const api = {
   getHouses: async (): Promise<House[]> => {
     const { data } = await loadDataFile<House[]>(HOUSES_FILE);
@@ -41,7 +34,7 @@ export const api = {
     return data.find(house => house.id === id);
   },
 
-  createBooking: async (bookingData: Omit<Booking, 'id' | 'status'>): Promise<{ success: boolean; issueUrl: string }> => {
+  createBooking: async (bookingData: Omit<Booking, 'id' | 'status'>): Promise<{ success: boolean; issueUrl?: string; error?: string }> => {
     const { data: bookings } = await loadDataFile<Booking[]>(BOOKINGS_FILE);
     const newBooking: Booking = {
       ...bookingData,
@@ -50,11 +43,19 @@ export const api = {
     };
 
     const updatedBookings = [...bookings, newBooking];
-    await saveDataFile(BOOKINGS_FILE, updatedBookings);
-    return {
-      success: true,
-      issueUrl: localPersistenceUrl(),
-    };
+    try {
+      const { commitUrl } = await saveDataFile(BOOKINGS_FILE, updatedBookings);
+      return {
+        success: true,
+        issueUrl: commitUrl,
+      };
+    } catch (error) {
+      console.error('[api] Errore durante la creazione della prenotazione:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Errore sconosciuto durante il salvataggio su GitHub.',
+      };
+    }
   },
 
   getBookingsForHouse: async (houseId: string): Promise<Booking[]> => {
