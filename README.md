@@ -14,9 +14,8 @@ View your app in AI Studio: https://ai.studio/apps/drive/1zO2xM-oIpH4CbUvPjAuCO_
 
 1. Install dependencies:
    `npm install`
-2. Configure the environment:
-   - Copy `.env.local.example` to `.env.local`
-   - Fill in the required variables (see [GitHub configuration](#github-configuration) and [Gemini configuration](#gemini-configuration))
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key.
+   - Se vuoi utilizzare GitHub come backend, copia `.env.local.example` in `.env.local` e compila anche le variabili descritte in [GitHub configuration](#github-configuration).
 3. Run the app:
    `npm run dev`
 
