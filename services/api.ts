@@ -1,5 +1,5 @@
 import { House, Booking, BookingStatus, Holiday, User, Role } from '../types';
-import { loadDataFile, saveDataFile, githubConfig } from './githubClient';
+import { loadDataFile, saveDataFile } from './localDb';
 
 const HOUSES_FILE = 'houses.json';
 const BOOKINGS_FILE = 'bookings.json';
@@ -23,11 +23,11 @@ const ensureHouseUpdatedAt = (house: House): House => ({
 const sortBookingsByDateDesc = (bookings: Booking[]): Booking[] => [...bookings]
   .sort((a, b) => new Date(b.from).getTime() - new Date(a.from).getTime());
 
-const defaultCommitLink = (file: string): string => {
-  if (githubConfig.pagesBaseUrl) {
-    return `${githubConfig.pagesBaseUrl}/data/${file}`;
+const localPersistenceUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    return window.location.href;
   }
-  return 'https://github.com';
+  return '#';
 };
 
 export const api = {
@@ -42,7 +42,7 @@ export const api = {
   },
 
   createBooking: async (bookingData: Omit<Booking, 'id' | 'status'>): Promise<{ success: boolean; issueUrl: string }> => {
-    const { data: bookings, sha } = await loadDataFile<Booking[]>(BOOKINGS_FILE);
+    const { data: bookings } = await loadDataFile<Booking[]>(BOOKINGS_FILE);
     const newBooking: Booking = {
       ...bookingData,
       id: generateId('b'),
@@ -50,11 +50,10 @@ export const api = {
     };
 
     const updatedBookings = [...bookings, newBooking];
-    const saveResult = await saveDataFile(BOOKINGS_FILE, updatedBookings, sha, `feat(bookings): add ${newBooking.id}`);
-
+    await saveDataFile(BOOKINGS_FILE, updatedBookings);
     return {
       success: true,
-      issueUrl: saveResult.commitUrl ?? defaultCommitLink(BOOKINGS_FILE),
+      issueUrl: localPersistenceUrl(),
     };
   },
 
@@ -79,7 +78,7 @@ export const api = {
   },
 
   register: async (name: string, email: string, password: string): Promise<{ user: User | null; error?: string }> => {
-    const { data: users, sha } = await loadDataFile<User[]>(USERS_FILE);
+    const { data: users } = await loadDataFile<User[]>(USERS_FILE);
     const existingUser = users.find(candidate => candidate.email.toLowerCase() === email.toLowerCase());
 
     if (existingUser) {
@@ -95,12 +94,12 @@ export const api = {
     };
 
     const updatedUsers = [...users, newUser];
-    const saveResult = await saveDataFile(USERS_FILE, updatedUsers, sha, `feat(users): add ${newUser.email}`);
+    await saveDataFile(USERS_FILE, updatedUsers);
     const { password: _password, ...userWithoutPassword } = newUser;
 
     return {
       user: userWithoutPassword as User,
-      error: saveResult.commitUrl ? undefined : 'Registrazione salvata solo localmente: configurare GitHub Pages per persistenza.',
+      error: undefined,
     };
   },
 
@@ -111,7 +110,7 @@ export const api = {
   },
 
   updateHouse: async (houseToUpdate: House): Promise<House> => {
-    const { data: houses, sha } = await loadDataFile<House[]>(HOUSES_FILE);
+    const { data: houses } = await loadDataFile<House[]>(HOUSES_FILE);
     const index = houses.findIndex(house => house.id === houseToUpdate.id);
 
     if (index === -1) {
@@ -119,12 +118,12 @@ export const api = {
     }
 
     houses[index] = ensureHouseUpdatedAt(houseToUpdate);
-    await saveDataFile(HOUSES_FILE, houses, sha, `chore(houses): update ${houseToUpdate.id}`);
+    await saveDataFile(HOUSES_FILE, houses);
     return houses[index];
   },
 
   createHouse: async (newHouseData: Omit<House, 'id' | 'updatedAt'>): Promise<House> => {
-    const { data: houses, sha } = await loadDataFile<House[]>(HOUSES_FILE);
+    const { data: houses } = await loadDataFile<House[]>(HOUSES_FILE);
     const baseId = slugify(newHouseData.title);
     const uniqueId = houses.some(house => house.id === baseId) ? generateId(baseId) : baseId;
 
@@ -134,19 +133,19 @@ export const api = {
     });
 
     const updatedHouses = [...houses, newHouse];
-    await saveDataFile(HOUSES_FILE, updatedHouses, sha, `feat(houses): add ${newHouse.id}`);
+    await saveDataFile(HOUSES_FILE, updatedHouses);
     return newHouse;
   },
 
   deleteHouse: async (id: string): Promise<{ success: boolean }> => {
-    const { data: houses, sha } = await loadDataFile<House[]>(HOUSES_FILE);
+    const { data: houses } = await loadDataFile<House[]>(HOUSES_FILE);
     const filtered = houses.filter(house => house.id !== id);
 
     if (filtered.length === houses.length) {
       return { success: false };
     }
 
-    await saveDataFile(HOUSES_FILE, filtered, sha, `chore(houses): remove ${id}`);
+    await saveDataFile(HOUSES_FILE, filtered);
     return { success: true };
   },
 
@@ -156,7 +155,7 @@ export const api = {
   },
 
   updateBookingStatus: async (bookingId: string, status: BookingStatus): Promise<{ success: boolean }> => {
-    const { data: bookings, sha } = await loadDataFile<Booking[]>(BOOKINGS_FILE);
+    const { data: bookings } = await loadDataFile<Booking[]>(BOOKINGS_FILE);
     const index = bookings.findIndex(booking => booking.id === bookingId);
 
     if (index === -1) {
@@ -164,7 +163,7 @@ export const api = {
     }
 
     bookings[index] = { ...bookings[index], status };
-    await saveDataFile(BOOKINGS_FILE, bookings, sha, `chore(bookings): set ${bookingId} to ${status}`);
+    await saveDataFile(BOOKINGS_FILE, bookings);
     return { success: true };
   },
 };

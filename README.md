@@ -2,52 +2,33 @@
 <img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
 </div>
 
-# Run and deploy your AI Studio app
+# Le Case di Città Futura
 
-This contains everything you need to run your app locally.
+Sito web per presentare e gestire le strutture dell'associazione "Città Futura" di Riace. L'interfaccia consente di consultare le case disponibili, inviare richieste di prenotazione e, tramite l'area manager, aggiornare l'inventario e approvare le richieste.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1zO2xM-oIpH4CbUvPjAuCO_NhUAqGJCBt
+## Avvio locale
 
-## Run Locally
+**Prerequisiti:** Node.js
 
-**Prerequisites:**  Node.js
+1. Installa le dipendenze
+   ```bash
+   npm install
+   ```
+2. (Opzionale) Copia `.env.local.example` in `.env.local` e imposta `VITE_PUBLIC_BASE_PATH` se pubblicherai il sito in una sottocartella (es. GitHub Pages).
+3. Avvia l'applicazione in sviluppo
+   ```bash
+   npm run dev
+   ```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key.
-   - Se vuoi utilizzare GitHub come backend, copia `.env.local.example` in `.env.local` e compila anche le variabili descritte in [GitHub configuration](#github-configuration).
-3. Run the app:
-   `npm run dev`
+## Dati e persistenza
 
-## GitHub configuration
+- I dati iniziali (case, festività, prenotazioni e utenti demo) sono contenuti nei file JSON sotto `public/data/`.
+- Al primo accesso l'applicazione legge questi file statici; tutte le modifiche successive (nuove prenotazioni, registrazioni, aggiornamenti gestore) vengono salvate nel `localStorage` del browser.
+- In questo modo non servono API esterne o chiavi di autenticazione: l'app resta completamente statica e funziona anche su GitHub Pages.
+- Per tornare ai dati originali elimina le voci che iniziano con `lcdcf:data:` dal `localStorage` oppure usa la funzione "Svuota dati sito" del browser.
 
-Il backend dell'applicazione utilizza i file JSON pubblicati su GitHub Pages come database e, quando sono disponibili le credenziali, effettua il commit automatico delle modifiche sul repository. Crea un file `.env.local` con le seguenti variabili:
+## Deploy su GitHub Pages
 
-```
-VITE_GITHUB_OWNER=<owner del repository>
-VITE_GITHUB_REPO=<nome del repository>
-VITE_GITHUB_TOKEN=<token con permesso "contents:write">
-VITE_GITHUB_BRANCH=main             # opzionale, default "main"
-VITE_GITHUB_PAGES_BASE_URL=https://<owner>.github.io/<repo>   # opzionale
-VITE_GITHUB_DATA_PATH=public/data    # opzionale
-VITE_GITHUB_PAGES_DATA_PATH=data     # opzionale
-VITE_PUBLIC_BASE_PATH=/nome-repo/    # opzionale, utile per GitHub Pages
-```
+Il repository include un workflow GitHub Actions (`Deploy to GitHub Pages`) che compila automaticamente l'app e pubblica la cartella `dist/` su GitHub Pages ad ogni push sul branch `main`.
 
-Se il token non è configurato l'applicazione continua a funzionare in sola lettura e qualsiasi modifica (nuove prenotazioni, utenti o case) viene salvata solamente in memoria temporanea. Impostando il token verranno effettuati commit automatici nei file JSON all'interno di `public/data/`.
-
-### Deployment su GitHub Pages
-
-Il repository include un workflow GitHub Actions (`Deploy to GitHub Pages`) che compila automaticamente l'app e pubblica la cartella `dist/` su GitHub Pages ogni volta che effettui un push su `main`. Una volta abilitato Pages nelle impostazioni del repository, scegli **GitHub Actions** come sorgente di pubblicazione in modo che la pipeline gestisca build e deploy senza dover committare i file generati.
-
-Per evitare errori 404 sugli asset quando l'app è pubblicata in una sottocartella (ad esempio `https://<owner>.github.io/<repo>/`), imposta la variabile `VITE_PUBLIC_BASE_PATH` nel file `.env.local` con il valore della sottocartella, includendo la slash iniziale e finale, ad esempio:
-
-```
-VITE_PUBLIC_BASE_PATH=/LeCaseDiCittaFutura2/
-```
-
-In assenza della variabile l'app utilizza automaticamente percorsi relativi durante la build, in modo da funzionare anche su GitHub Pages.
-
-## Gemini configuration
-
-Imposta la variabile `GEMINI_API_KEY` nel file `.env.local` se l'app o i tuoi script necessitano dell'accesso all'API Gemini. La chiave viene esposta a tempo di build tramite `process.env.GEMINI_API_KEY` e può essere recuperata nel codice client con `import.meta.env.GEMINI_API_KEY` se necessario.
+Quando pubblichi in una sottocartella (es. `https://<utente>.github.io/<repo>/`) ricorda di impostare `VITE_PUBLIC_BASE_PATH` nel file `.env.local` (ad esempio `/LeCaseDiCittaFutura2/`) prima di eseguire `npm run build`, così gli asset saranno generati con i percorsi corretti.
