@@ -12,12 +12,11 @@ View your app in AI Studio: https://ai.studio/apps/drive/1zO2xM-oIpH4CbUvPjAuCO_
 
 **Prerequisites:**  Node.js
 
-
 1. Install dependencies:
    `npm install`
-2. Configure the connection to GitHub:
+2. Configure the environment:
    - Copy `.env.local.example` to `.env.local`
-   - Fill in the required variables (see [GitHub configuration](#github-configuration))
+   - Fill in the required variables (see [GitHub configuration](#github-configuration) and [Gemini configuration](#gemini-configuration))
 3. Run the app:
    `npm run dev`
 
@@ -49,3 +48,7 @@ VITE_PUBLIC_BASE_PATH=/LeCaseDiCittaFutura2/
 ```
 
 In assenza della variabile l'app utilizza automaticamente percorsi relativi durante la build, in modo da funzionare anche su GitHub Pages.
+
+## Gemini configuration
+
+Imposta la variabile `GEMINI_API_KEY` nel file `.env.local` se l'app o i tuoi script necessitano dell'accesso all'API Gemini. La chiave viene esposta a tempo di build tramite `process.env.GEMINI_API_KEY` e può essere recuperata nel codice client con `import.meta.env.GEMINI_API_KEY` se necessario.
