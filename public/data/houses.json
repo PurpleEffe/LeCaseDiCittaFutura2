@@ -1,0 +1,74 @@
+[
+  {
+    "id": "casa-ulivo",
+    "title": "Casa dell'Ulivo",
+    "summary": "Un'accogliente dimora nel cuore del borgo antico, perfetta per famiglie.",
+    "description": "Immersa nella quiete del centro storico di Riace, la Casa dell'Ulivo offre un'autentica esperienza di vita comunitaria. Con le sue spesse mura in pietra e l'arredamento semplice ma curato, è il rifugio ideale per chi cerca pace e ispirazione. Dispone di un piccolo patio interno dove rilassarsi all'ombra dell'antico ulivo che le dà il nome.",
+    "capacity": 4,
+    "bedrooms": 2,
+    "bathrooms": 1,
+    "amenities": ["cucina", "wi-fi", "aria-condizionata"],
+    "images": [
+      "https://picsum.photos/seed/ulivo1/800/600",
+      "https://picsum.photos/seed/ulivo2/800/600",
+      "https://picsum.photos/seed/ulivo3/800/600"
+    ],
+    "location": { "lat": 38.4183, "lng": 16.4833, "address": "Via Garibaldi, Riace (RC)" },
+    "active": true,
+    "updatedAt": "2024-09-26T00:00:00Z"
+  },
+  {
+    "id": "la-terrazza-sul-mare",
+    "title": "La Terrazza sul Mare",
+    "summary": "Appartamento luminoso con una vista mozzafiato sulla costa ionica.",
+    "description": "Svegliarsi con il rumore delle onde e ammirare l'alba sul Mar Ionio: questo è ciò che offre La Terrazza sul Mare. Questo appartamento moderno e luminoso è dotato di un'ampia terrazza attrezzata, ideale per cene all'aperto e momenti di relax. La sua posizione privilegiata lo rende perfetto per esplorare sia il borgo che le spiagge vicine.",
+    "capacity": 5,
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "amenities": ["cucina", "wi-fi", "aria-condizionata", "vista-mare", "accessibile"],
+    "images": [
+      "https://picsum.photos/seed/mare1/800/600",
+      "https://picsum.photos/seed/mare2/800/600",
+      "https://picsum.photos/seed/mare3/800/600"
+    ],
+    "location": { "lat": 38.4195, "lng": 16.485, "address": "Vico Ionio, Riace (RC)" },
+    "active": true,
+    "updatedAt": "2024-09-26T00:00:00Z"
+  },
+  {
+    "id": "il-rifugio-del-poeta",
+    "title": "Il Rifugio del Poeta",
+    "summary": "Un piccolo e intimo monolocale, ideale per coppie o viaggiatori solitari.",
+    "description": "Ricavato da un'antica bottega artigiana, Il Rifugio del Poeta è un nido romantico e suggestivo. L'ambiente unico, con travi a vista e dettagli in terracotta, crea un'atmosfera calda e accogliente. È il luogo perfetto per chi cerca un soggiorno intimo e l'ispirazione per scrivere, leggere o semplicemente staccare dalla routine quotidiana.",
+    "capacity": 2,
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "amenities": ["cucina", "wi-fi", "parcheggio"],
+    "images": [
+      "https://picsum.photos/seed/poeta1/800/600",
+      "https://picsum.photos/seed/poeta2/800/600"
+    ],
+    "location": { "lat": 38.4179, "lng": 16.4821, "address": "Piazza dei Sogni, Riace (RC)" },
+    "active": true,
+    "updatedAt": "2024-09-26T00:00:00Z"
+  },
+  {
+    "id": "la-casa-grande",
+    "title": "La Casa Grande",
+    "summary": "Spaziosa e confortevole, ideale per gruppi e grandi famiglie.",
+    "description": "La Casa Grande è pensata per l'ospitalità comunitaria. Con i suoi ampi spazi comuni, una cucina attrezzata per grandi numeri e diverse camere da letto, è perfetta per gruppi di amici, famiglie numerose o workshop residenziali. Il grande giardino condiviso è uno spazio di incontro e socialità, in pieno spirito Città Futura.",
+    "capacity": 8,
+    "bedrooms": 4,
+    "bathrooms": 3,
+    "amenities": ["cucina", "wi-fi", "parcheggio", "accessibile"],
+    "images": [
+      "https://picsum.photos/seed/grande1/800/600",
+      "https://picsum.photos/seed/grande2/800/600",
+      "https://picsum.photos/seed/grande3/800/600",
+      "https://picsum.photos/seed/grande4/800/600"
+    ],
+    "location": { "lat": 38.42, "lng": 16.48, "address": "Via della Comunità, Riace (RC)" },
+    "active": true,
+    "updatedAt": "2024-09-26T00:00:00Z"
+  }
+]
